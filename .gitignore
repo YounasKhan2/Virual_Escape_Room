@@ -25,6 +25,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# Docker
+.dockerignore
+
 # Virtual environment
 venv/
 env/
