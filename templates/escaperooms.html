@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="escape-rooms">
+      <div class="container">
+        <header>
+            <h2>OUR ESCAPE ROOMS</h2>
+            <p class="subtitle">Choose your adventure and test your puzzle-solving skills</p>
+        </header>
+        
+        <div class="games-list">
+            {% for game in games %}
+            <div class="game-detail">
+                <!-- Game Image -->
+                <div class="game-image">
+                    {% if game[11] %}
+                        <img src="{{ game[11] }}" alt="{{ game[1] }}" class="game-img">
+                    {% else %}
+                        <div class="default-game-img">{{ game[1] }}</div>
+                    {% endif %}
+                </div>
+                
+                <h3>{{ game[1] }}</h3>
+                
+                <div class="rating">
+                    {% set rating_int = game[3] | int %}
+                    {% for i in range(5) %}
+                        {% if i < rating_int %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    {{ game[3] }} ({{ game[4] }} ratings)
+                </div>
+                
+                <p class="description">{{ game[2] }}</p>
+                
+                <div class="player-review">
+                    <em>
+                    {% if game[1] == "Pirate Panic" %}
+                        "Playful puzzles and charming art make it a joy to play"
+                    {% elif game[1] == "The Tomb" %}
+                        "Kept us thinking without ever feeling frustrating, really good with friends"
+                    {% elif game[1] == "Bitcoin Break-in" %}
+                        "Really creative story and puzzles, we had a blast figuring it all out"
+                    {% else %}
+                        "Amazing escape room experience!"
+                    {% endif %}
+                    </em>
+                </div>
+                
+                <!-- Price buttons -->
+                {% if game[5] == 0.0 %}
+                    <a href="{{ game[12] }}" class="btn-free">🎮 Play now for FREE!</a>
+                {% else %}
+                    <a href="{{ game[12] }}" class="btn-premium">🎮 Play now for ${{ game[5] }}</a>
+                {% endif %}
+                
+                <!-- Game info -->
+                <div class="game-info">
+                    <p><strong>👥 Players:</strong> {{ game[6] }}-{{ game[7] }}</p>
+                    <p><strong>⏱️ Time:</strong> {{ game[8] }}-{{ game[9] }} minutes</p>
+                    <p><strong>🎯 Difficulty:</strong> <span class="difficulty {{ game[10].lower() }}">{{ game[10] }}</span></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+</section>
+{% endblock %}

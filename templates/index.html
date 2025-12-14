@@ -1,0 +1,58 @@
+ {% extends "base.html" %}
+
+{% block content %}
+<!-- Banner Section -->
+<section class="banner">
+    <div class="container">
+        <div class="banner-content">
+            <h2>ARE YOU READY TO ESCAPE?</h2>
+            <a href="{{ url_for('escaperooms') }}" class="btn-play">LET'S PLAY</a>
+        </div>
+    </div>
+</section>
+
+<!-- Games Preview Section -->
+<section class="games-preview">
+    <div class="container">
+        <h2>FREE & PREMIUM ONLINE ESCAPE ROOMS</h2>
+        <p class="subtitle">Escape rooms you can play together - in the same room or across the world.</p>
+        <p class="subtitle">Perfect for friends, families, date nights, or team-building challenges.</p>
+        
+        <div class="games-grid">
+            {% for game in games %}
+            <div class="game-card">
+                <div class="game-image">
+                    {% if game[11] %}
+                        <img src="{{ game[11] }}" alt="{{ game[1] }}" class="preview-img">
+                    {% else %}
+                        <div class="default-preview-img">{{ game[1] }}</div>
+                    {% endif %}
+                </div>
+                <h3>{{ game[1] }}</h3>
+                <div class="rating">
+                    {% set rating_int = game[3] | int %}
+                    {% for i in range(5) %}
+                        {% if i < rating_int %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% if game[5] == 0.0 %}
+                    <p class="price-free">FREE</p>
+                {% else %}
+                    <p class="price-premium">${{ game[5] }}</p>
+                {% endif %}
+                <a href="{{ game[12] }}" class="btn-play-preview">Play Now</a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- View all games button -->
+        <div class="view-all">
+            <a href="{{ url_for('escaperooms') }}" class="btn-view-all">View All Escape Rooms →</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

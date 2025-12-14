@@ -1,0 +1,117 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Escape Room Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1>Virtual Escape Room Game</h1>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <ul>
+                <li><a href="{{ url_for('home') }}">HOME</a></li>
+                <li><a href="{{ url_for('escaperooms') }}">ESCAPE ROOMS</a></li>
+                <li><a href="{{ url_for('faqs') }}">FAQs</a></li>
+                {% if session.user_id %}
+                <li><span class="welcome-text">Welcome, {{ session.username }}</span></li>
+                <li><a href="{{ url_for('logout') }}">LOGOUT</a></li>
+                {% else %}
+                <li><a href="{{ url_for('login') }}">LOGIN</a></li>
+                <li><a href="{{ url_for('signup') }}">SIGN UP</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}" data-timeout="4000">
+                        <span class="flash-text">{{ message }}</span>
+                        <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Virtual Escape Room Game. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Auto-hide flash messages after 4 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            
+            flashMessages.forEach(function(message) {
+                const timeout = message.getAttribute('data-timeout') || 4000;
+                
+                // Auto remove after timeout
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    message.style.transform = 'translateY(-20px)';
+                    setTimeout(function() {
+                        if (message.parentElement) {
+                            message.remove();
+                        }
+                    }, 300);
+                }, timeout);
+                
+                // Add hover effect to pause timeout
+                let timeoutId;
+                function startTimeout() {
+                    timeoutId = setTimeout(function() {
+                        message.style.opacity = '0';
+                        message.style.transform = 'translateY(-20px)';
+                        setTimeout(function() {
+                            if (message.parentElement) {
+                                message.remove();
+                            }
+                        }, 300);
+                    }, timeout);
+                }
+                
+                function clearMessageTimeout() {
+                    clearTimeout(timeoutId);
+                }
+                
+                message.addEventListener('mouseenter', clearMessageTimeout);
+                message.addEventListener('mouseleave', startTimeout);
+                
+                startTimeout();
+            });
+            
+            // Remove flash messages container if empty
+            const checkAndRemoveContainer = function() {
+                const flashContainer = document.querySelector('.flash-messages');
+                if (flashContainer && flashContainer.children.length === 0) {
+                    flashContainer.remove();
+                }
+            };
+            
+            // Check container every second
+            setInterval(checkAndRemoveContainer, 1000);
+        });
+    </script>
+</body>
+</html>
